@@ -1,0 +1,22 @@
+---
+# roles/nodejs/tasks/main.yml
+  - name: add nodejs source to apt
+    copy:
+      src: nodejs.list
+      dest: /etc/apt/sources.list.d/nodejs.list
+    become: yes
+  
+  - name: add nodejs repo key
+    apt_key:
+      url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+      state: present
+    become: yes
+
+  - name: install requirements
+    apt:
+      name: '{{ item }}'
+      state: present
+      allow_unauthenticated: yes
+    with_items:
+     - nodejs
+    become: yes

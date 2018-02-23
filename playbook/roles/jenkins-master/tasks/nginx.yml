@@ -1,0 +1,29 @@
+---
+# roles/jenkins-master/tasks/nginx.yml
+
+- name: configure nginx sites
+  copy:
+    src: 'nginx/sites-available/{{item}}'
+    dest: '/etc/nginx/sites-enabled/{{item}}'
+    owner: root
+    group: root
+  with_items:
+    - 'http-jenkins.conf'
+    - 'dadu-co.conf'
+  become: yes
+
+- name: configure nginx conf
+  copy:
+    src: 'nginx/{{item}}'
+    dest: '/etc/nginx/{{item}}'
+    owner: root
+    group: root
+  with_items:
+    - 'nginx.conf'
+  become: yes
+
+# TODO: - import_tasks: letsencrypt.yml
+
+- name: reload nginx to activate all sites
+  service: name=nginx state=restarted
+  become: yes

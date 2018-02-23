@@ -1,0 +1,8 @@
+---
+
+- hosts: docker-server
+  roles:
+    - server-base
+    - nodejs
+    - jenkins-slave
+    - docker

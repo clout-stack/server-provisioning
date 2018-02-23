@@ -1,0 +1,10 @@
+---
+
+- hosts: build-server
+  vars:
+    java_version: 8
+  roles:
+    - server-base
+    - srsp.oracle-java
+    - nodejs
+    - jenkins-master

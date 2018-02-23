@@ -1,0 +1,53 @@
+---
+# roles/jenkins-master/tasks/main.yml
+
+- name: add Jenkins repo key
+  apt_key:
+    url: https://pkg.jenkins.io/debian/jenkins.io.key
+    state: present
+  become: yes
+
+- name: add Jenkins source
+  copy:
+    src: 'jenkins.list'
+    dest: '/etc/apt/sources.list.d/jenkins.list'
+    owner: root
+    group: root
+  become: yes
+
+- name: install requirements
+  apt:
+    name: '{{ item }}'
+    state: present
+    allow_unauthenticated: yes
+  with_items:
+    - jenkins
+    - nginx
+    - git
+  become: yes
+
+- name: create wheel group
+  group:
+    name: wheel
+    state: present
+  become: yes
+
+- name: Allow 'wheel' group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
+  become: yes
+
+- name: Add jenkins to wheel group
+  user:
+    name: jenkins
+    groups: wheel
+    append: yes
+    state: present
+  become: yes
+
+# - import_tasks: services.yml
+- import_tasks: nginx.yml

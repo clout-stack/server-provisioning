@@ -1,0 +1,18 @@
+---
+# roles/jenkins-master/tasks/services.yml
+
+# - name: install node service files
+#   copy:
+#     src: 'services/{{item}}'
+#     dest: '/lib/systemd/system/{{item}}'
+#   with_items:
+#     - 'clout-head.service'
+#   become: yes
+
+# - name: enable clout-head
+#   service: name=node-clout-head enabled=yes
+#   become: yes
+
+# - name: restart clout-head
+#   service: name=node-clout-head state=restarted
+#   become: yes

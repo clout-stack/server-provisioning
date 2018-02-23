@@ -1,0 +1,4 @@
+---
+# roles/docker/vars/main.yml
+
+composeVers: 1.16.1

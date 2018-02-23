@@ -1,0 +1,36 @@
+---
+# roles/jenkins-slave/tasks/main.yml
+
+  - name: install requirements
+    apt:
+      name: '{{ item }}'
+      state: present
+    with_items:
+     - apt-transport-https
+     - ca-certificates
+     - openjdk-8-jre-headless
+     - openjdk-8-jdk-headless
+    become: yes
+
+  - name: create jenkins group
+    group:
+      name: jenkins
+      state: present
+    become: yes
+
+  - name: create user jenkins
+    user:
+      name: jenkins
+      append: yes
+      group: jenkins
+      shell: /bin/bash
+      home: /var/jenkins
+      state: present
+    become: yes
+
+  - name: deploy jenkins master pub key
+    authorized_key:
+      key: "{{ lookup('file', '../private/jenkins.rsa.pub') }}"
+      user: jenkins
+      exclusive: yes
+    become: yes

@@ -1,0 +1,63 @@
+---
+# roles/docker/tasks/main.yml
+
+  - name: install requirements
+    apt:
+      name: '{{ item }}'
+      state: present
+    with_items:
+     - apt-transport-https
+     - ca-certificates
+    become: yes
+
+  - name: remove older version
+    apt:
+      name: '{{ item }}'
+      state: absent
+    with_items:
+      - docker
+      - docker-engine
+      - docker.io
+    become: yes
+
+  - name: remove older repo
+    apt_repository:
+      repo: 'deb https://apt.dockerproject.org/repo debian-{{ ansible_distribution_release }} main'
+      state: absent
+    become: yes
+
+  - name: add repo key (amd64 only)
+    apt_key:
+      id: 0EBFCD88
+      url: https://download.docker.com/linux/debian/gpg
+      state: present
+    become: yes
+
+  - name: add repo (amd64 only)
+    apt_repository:
+      repo: 'deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable'
+      state: present
+      filename: 'docker'
+    become: yes
+
+  - name: install docker-ce (amd64)
+    apt:
+      name: docker-ce
+      state: present
+      update_cache: yes
+    become: yes
+
+  - name: install docker-compose
+    get_url:
+      url: https://github.com/docker/compose/releases/download/{{ composeVers }}/run.sh
+      dest: /usr/local/bin/docker-compose
+      mode: 0755
+    become: yes
+
+  - name: add jenkins in docker group
+    user:
+      name: jenkins
+      groups: docker
+      append: yes
+      state: present
+    become: yes
