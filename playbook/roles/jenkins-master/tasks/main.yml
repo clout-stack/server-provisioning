@@ -49,5 +49,12 @@
     state: present
   become: yes
 
+- name: Add ssh key for jenkins
+  user:
+    name: jenkins
+    generate_ssh_key: yes
+    ssh_key_bits: 2048
+    ssh_key_file: ../../../../private/jenkins.rsa
+
 # - import_tasks: services.yml
 - import_tasks: nginx.yml

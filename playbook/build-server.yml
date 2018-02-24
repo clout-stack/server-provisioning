@@ -8,3 +8,4 @@
     - srsp.oracle-java
     - nodejs
     - jenkins-master
+    - docker
